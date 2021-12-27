@@ -16,23 +16,26 @@ entity multi_switch is
 		y3			: out std_logic);
 end entity;
 
-architecture single_switch of multi_switch is
+architecture lut of multi_switch is
 	constant COUNTER_BITS: natural := 1 + integer(ceil(log2(real((T_DEB_NS*F_CLK_MHZ)/1000))));
 	signal sclk : std_logic;
-	signal x1_reg : std_logic_vector(2 downto 0);
-	signal x2_reg : std_logic_vector(2 downto 0);
-	signal x3_reg : std_logic_vector(2 downto 0);
+	signal x1_reg : std_logic_vector(1 downto 0);
+	signal x2_reg : std_logic_vector(1 downto 0);
+	signal x3_reg : std_logic_vector(1 downto 0);
 begin
 	process (clk)
 		variable count : unsigned(COUNTER_BITS-1 downto 0);
-		begin 
-		sclk <= count(COUNTer_BITS-1);
+		begin
+		sclk <= count(COUNTER_BITS-1);
+		if rising_edge (clk) then
 			if sclk then
-			count := (others => '0');
-			else
-			count:= count + 1;
+				count := (others => '0');
+			else 
+				count := count + 1;
 			end if;
-		end process;
+		end if;
+	end process;
+	
 	process (sclk)
 		begin
 		if rising_edge (sclk) then
@@ -72,3 +75,4 @@ begin
 		end if;
 	end process;
 end architecture;
+		
